@@ -1,4 +1,2 @@
-coursemate
-==========
-
 CourseMate
+==========
