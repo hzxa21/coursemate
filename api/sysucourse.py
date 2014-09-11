@@ -39,7 +39,6 @@ def retrive_data(url, cookie, request_json):
         return (False, 'timeout')
 
     ret_code = ch.getinfo(pycurl.HTTP_CODE)
-    print ret_code
     ret_body = ret.getvalue()
     ch.close()
     if (ret_body.startswith('THE-NODE-OF-SESSION-TIMEOUT', 5)):
@@ -74,8 +73,6 @@ def login(username, passward):
         return (False, 'errorpass')
     else:
         ret_header = ret.getvalue()
-        print ret_header
-        print ret_code
         cookies = re.findall(r'^Set-Cookie: (.*);', ret_header, re.MULTILINE)
         cookie = cookies[0][11:]
         logging.debug('Login success: %s %s', username, passward)
@@ -235,14 +232,13 @@ def get_student_info(cookie):
     if result[0] == True:
         result = format_to_json(result[1])
         data = json.loads(result)
-        data = data['body']['dataStores']['xsxkjgStore']['rowSet']['primary'][0]
+        data = data['body']['dataStores']['xsxxStore']['rowSet']['primary'][0]
         info = dict()
-        info['id'] = data['resourceID'] #资源ID
         info['stuID'] = data['xh']      #学号
         info['name'] = data['xm']       #姓名
         info['school'] = data['xymc']   #学院
         info['major'] = data['zyfxmc']  #专业
-        info['grad'] = data['njmc']     #年级
+        info['grade'] = data['njmc']     #年级
         return (True,info)
     else:
         return (False,None)
@@ -252,9 +248,6 @@ if __name__ == "__main__":
     username = sys.argv[1] #用户名
     password = sys.argv[2] #密码
     res, cookie = login(username, password)
-
-    info = get_info(cookie)
-    print info
 
     if res:
         year = '2013-2014' #学期
@@ -273,7 +266,12 @@ if __name__ == "__main__":
 
         result = get_student_info(cookie)
         if result[0] == True:
-            print result[1]
+            result = result[1]
+            print result['stuID']
+            print result['name']
+            print result['grade']
+            print result['school']
+            print result['major']
         else:
             print 'get info error'
 
