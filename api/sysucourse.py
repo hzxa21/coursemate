@@ -129,6 +129,82 @@ def get_course_result(cookie,year,term):
     '''%(year,term)
     return retrive_data(url, cookie, query_json)
 
+# --------------------
+# Personal info Query
+# --------------------
+def get_info(cookie):
+    logging.debug('Getting info: %s', cookie)
+    url = "http://uems.sysu.edu.cn/jwxt/WhzdAction/WhzdAction.action?method=getGrwhxxList"
+    query_json = """
+    {
+        header: {
+            "code": -100,
+            "message": {
+                "title": "",
+                "detail": ""
+            }
+        },
+        body: {
+            dataStores: {
+                xsxxStore: {
+                    rowSet: {
+                        "primary": [],
+                        "filter": [],
+                        "delete": []
+                    },
+                    name: "xsxxStore",
+                    pageNumber: 1,
+                    pageSize: 10,
+                    recordCount: 0,
+                    rowSetName: "pojo_com.neusoft.education.sysu.xj.grwh.model.Xsgrwhxx"
+                }
+            },
+            parameters: {
+                "args": [""]
+            }
+        }
+    }
+    """
+    return retrive_data(url, cookie, query_json)
+
+# --------------------
+# Personal info Query
+# --------------------
+def get_info(cookie):
+    logging.debug('Getting info: %s', cookie)
+    url = "http://uems.sysu.edu.cn/jwxt/WhzdAction/WhzdAction.action?method=getGrwhxxList"
+    query_json = """
+    {
+        header: {
+            "code": -100,
+            "message": {
+                "title": "",
+                "detail": ""
+            }
+        },
+        body: {
+            dataStores: {
+                xsxxStore: {
+                    rowSet: {
+                        "primary": [],
+                        "filter": [],
+                        "delete": []
+                    },
+                    name: "xsxxStore",
+                    pageNumber: 1,
+                    pageSize: 10,
+                    recordCount: 0,
+                    rowSetName: "pojo_com.neusoft.education.sysu.xj.grwh.model.Xsgrwhxx"
+                }
+            },
+            parameters: {
+                "args": [""]
+            }
+        }
+    }
+    """
+    return retrive_data(url, cookie, query_json)
+
 def get_course(cookie,year,term):
 #获取学生课程，返回课程列表，每个课程为一个字典
     result = get_course_result(cookie.encode('ascii'),year.encode('ascii'),term.encode('ascii'))
@@ -147,6 +223,23 @@ def get_course(cookie,year,term):
             one['time'] = item['sksjdd']
             course.append(one)
         return (True,course)
+    else:
+        return (False,None)
+
+def get_student_info(cookie):
+#获取学生个人信息
+    result = get_info(cookie)
+    if result[0] == True:
+        result = format_to_json(result[1])
+        data = json.loads(result)
+        data = data['body']['dataStores']['xsxxStore']['rowSet']['primary'][0]
+        info = dict()
+        info['stuID'] = data['xh']      #学号
+        info['name'] = data['xm']       #姓名
+        info['school'] = data['xymc']   #学院
+        info['major'] = data['zyfxmc']  #专业
+        info['grade'] = data['njmc']     #年级
+        return (True,info)
     else:
         return (False,None)
 
@@ -170,6 +263,18 @@ if __name__ == "__main__":
                 print '\n'
         else:
             print('course error')
+
+        result = get_student_info(cookie)
+        if result[0] == True:
+            result = result[1]
+            print result['stuID']
+            print result['name']
+            print result['grade']
+            print result['school']
+            print result['major']
+        else:
+            print 'get info error'
+
     else:
         print('login error')
 
