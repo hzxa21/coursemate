@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="http://apps.bdimg.com/libs/jquerymobile/1.3.0/jquery.mobile-1.3.0.min.css" />
+    <link rel="stylesheet" type="text/css"  href="{{ url_for('static',filename='homeCss.css')}}" />
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"> </script>
+    <script src="http://apps.bdimg.com/libs/jquerymobile/1.3.0/jquery.mobile-1.3.0.min.js"> </script>
+  </head>
+
+  <body>
+    <div data-role="page" data-theme="a">
+	  <div data-role="header">
+		   <h1>CourseMate </h1>
+		  <div data-role="navbar">
+			  <ul class="color">
+				  <li><a href="{{ url_for('course') }}" data-icon="home" data-theme="b"> 课程主页 </a></li>
+				  <li><a href="{{ url_for('user') }}" data-icon="star" data-theme="b"> 个人资料 </a></li>
+				  <li><a href="{{ url_for('logout') }}" data-icon="delete" data-theme="b"> 注销 </a></li>
+			  </ul>
+		  </div>
+	  </div>
+
+	  <div data-role="content" class="back" style="background: {{ url_for('static',filename='logoX.png') }} ">
+		  <center> <div>
+          {% if user_info %}
+		  <center><table class="user">
+	        <tr> <td>用户名</td> <td>{{ user_info['username'] }}</td> </tr>
+		    <tr> <td>学号</td> <td>{{ user_info['user_id'] }}</td></tr>
+		    <tr> <td>年级</td> <td>{{ user_info['grade'] }}</td></tr>
+		    <tr> <td>学院</td> <td>{{ user_info['school'] }}</td> </tr>
+		    <tr> <td>专业</td> <td>{{ user_info['major'] }}</td> </tr>
+		  </table></center></div></center>
+          {% endif %}
+	  </div>
+
+	  </br><div data-role="footer" data-theme="d">
+		  <center style="color:#000000;"><p>硬梆梆团队技术支持</p>
+			  <p>&copy; CourseMate All right resevred.</p>
+		  </center>
+	  </div>
+    </div>
+
+  </body>
+</html>
+

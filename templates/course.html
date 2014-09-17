@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="gbk" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="http://apps.bdimg.com/libs/jquerymobile/1.3.0/jquery.mobile-1.3.0.min.css" />
+    <link rel="stylesheet" type="text/css"  href="{{ url_for('static',filename='homeCss.css') }}" />
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"> </script>
+    <script src="http://apps.bdimg.com/libs/jquerymobile/1.3.0/jquery.mobile-1.3.0.min.js"> </script>
+  </head>
+
+  <body>
+    <div data-role="page" data-theme="a">
+
+	  <div data-role="header">
+		  <h1><img src="{{ url_for('static',filename='logoM.png') }}"/>CourseMate </h1>
+		  <div data-role="navbar">
+			  <ul class="color">
+				  <li><a href="{{ url_for('course') }}" data-icon="home" data-theme="b">课程主页</a></li>
+				  <li><a href="{{ url_for('user') }}" data-icon="star" data-theme="b">个人资料</a></li>
+				  <li><a href="{{ url_for('logout')}}" data-icon="delete" data-theme="b">注销</a></li>
+			  </ul>
+		  </div>
+	  </div>
+
+      <div class="content" data-role='content'></br>
+      <div class="cont">
+      <ul data-role='listview' data-theme="d">
+      {% for cour in course_list %}
+      <li><a href="{{ '/course/'+cour['cou_id'] }}" data-ajax=false>
+      <p><b>{{ cour['course_name'] }}</b></p><p>{{ cour['teacher'] }}</p><p>{{ cour['time'] }}</p></a></li>
+      {% endfor %}
+      </div>
+      </div>
+
+	  </br><div data-role="footer" data-theme="d">
+		  <center style="color:#000000; width: 100%;"><p>硬梆梆团队技术支持</p>
+			  <p>&copy; CourseMate All right resevred.</p>
+		  </center>
+	  </div>
+
+  </div>
+  </body>
+
+  </html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title> CoureseMate </title>
+<link rel="stylesheet" href="http://apps.bdimg.com/libs/jquerymobile/1.3.0/jquery.mobile-1.3.0.min.css" />
+<script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"> </script>
+<script src="http://apps.bdimg.com/libs/jquerymobile/1.3.0/jquery.mobile-1.3.0.min.js"> </script>
+</head>
+
+<body>
+  <div data-role="page" data-theme="a">
+	  <center><img src="{{url_for('static',filename='logoL.png')}}" /></center>
+    <div data-role="content">
+        <form action="{{ url_for('login') }}" method="POST">
+	      <center><table>
+		<tr>
+		  <td><strong>学号</strong> <b style="color:#0099FF">*</b> </td>
+		  <td><input  placeholder="学号" type="text" name="stuid" /> </td>
+		</tr>
+		<tr>
+		  <td><strong>密码</strong> <b style="color:#0099FF">*</b> </td>
+		  <td><input placeholder="教务系统密码" type="password" name="password" /> </td>
+		</tr>
+              </table></table>
+	      <center><input data-theme="a" type="submit" data-inline="true" data-icon="star" value="Login"/></center>
+	    </form>
+    </div>
+    <div data-role="footer" class="footer" data-theme="d">
+      <center style="color:#000000"><p>硬梆梆团队技术支持</p>
+	<p>&copy; CourseMate All right resevred.</p>
+      </center>
+    </div>
+  </div>
+</body>
+</html>
