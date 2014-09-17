@@ -23,7 +23,7 @@ CREATE TABLE student
 drop table if exists `course`;
 CREATE TABLE `course`
 (
-    `cou_id` varchar(32) not null comment '课程resourceID',
+    `cou_id` varchar(128) not null comment '课程resourceID',
     `course_name` varchar(512) not null comment '课程名称',
     `time` varchar(1024) not null comment '上课时间',
     `teacher` VARCHAR(32) not null comment '授课老师',
@@ -34,8 +34,8 @@ drop table if exists `stu_course`;
 CREATE TABLE `stu_course`
 (
 	`sc_id` INTEGER NOT NULL AUTO_INCREMENT comment '主键',
-    `stu_id` INTEGER not null REFERENCES `student` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    `cou_id` INTEGER not null REFERENCES `course` (`cou_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    `stu_id` varchar(128) not null REFERENCES `student` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    `cou_id` varchar(128) not null REFERENCES `course` (`cou_id`) ON DELETE CASCADE ON UPDATE CASCADE,
 	primary key (`sc_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 comment='学生-课程表';
 
@@ -50,7 +50,7 @@ CREATE TABLE post
 	`status` INTEGER NOT NULL default 0 comment '状态，0 = 草稿，1 = 发布',
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`author_id` INTEGER NOT NULL REFERENCES student(`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-	`cou_id` INTEGER NOT NULL REFERENCES `course` (`cou_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+	`cou_id` varchar(128) NOT NULL REFERENCES `course` (`cou_id`) ON DELETE CASCADE ON UPDATE CASCADE,
 	primary key (`post_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 comment='日志表';
 
