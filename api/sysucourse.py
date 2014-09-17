@@ -257,8 +257,8 @@ if __name__ == "__main__":
         if result[0] == True:
             result = result[1];
             for course in result:
-                print 'The course ID : %s' % course['id']
-                print 'The course name: %s' % course['coursename']
+                print 'The course ID : %s' % course['cou_id']
+                print 'The course name: %s' % course['course_name']
                 print 'The Teacher is : %s' % course['teacher']
                 print 'The time is : %s ' % course['time']
                 print '\n'
