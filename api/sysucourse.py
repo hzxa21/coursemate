@@ -217,7 +217,7 @@ def get_course(cookie,year,term):
         for item in data:
             #print item
             one = dict()
-            one['id'] = item['resourceID']
+            one['id'] = item['jxbh']
             one['coursename'] = item['kcmc']
             one['teacher'] = item['xm'].split(',')[0]
             one['time'] = item['sksjdd']
@@ -236,6 +236,7 @@ def get_student_info(cookie):
         info = dict()
         info['stuID'] = data['xh']      #学号
         info['name'] = data['xm']       #姓名
+        info['sex'] = data['xbm']       #可能为性别
         info['school'] = data['xymc']   #学院
         info['major'] = data['zyfxmc']  #专业
         info['grade'] = data['njmc']     #年级
