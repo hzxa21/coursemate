@@ -217,8 +217,8 @@ def get_course(cookie,year,term):
         for item in data:
             #print item
             one = dict()
-            one['id'] = item['jxbh']
-            one['coursename'] = item['kcmc']
+            one['cou_id'] = item['jxbh']
+            one['course_name'] = item['kcmc']
             one['teacher'] = item['xm'].split(',')[0]
             one['time'] = item['sksjdd']
             course.append(one)
