@@ -170,43 +170,6 @@ def get_info(cookie):
     """
     return retrive_data(url, cookie, query_json)
 
-# --------------------
-# Personal info Query
-# --------------------
-def get_info(cookie):
-    url = "http://uems.sysu.edu.cn/jwxt/WhzdAction/WhzdAction.action?method=getGrwhxxList"
-    query_json = """
-    {
-        header: {
-            "code": -100,
-            "message": {
-                "title": "",
-                "detail": ""
-            }
-        },
-        body: {
-            dataStores: {
-                xsxxStore: {
-                    rowSet: {
-                        "primary": [],
-                        "filter": [],
-                        "delete": []
-                    },
-                    name: "xsxxStore",
-                    pageNumber: 1,
-                    pageSize: 10,
-                    recordCount: 0,
-                    rowSetName: "pojo_com.neusoft.education.sysu.xj.grwh.model.Xsgrwhxx"
-                }
-            },
-            parameters: {
-                "args": [""]
-            }
-        }
-    }
-    """
-    return retrive_data(url, cookie, query_json)
-
 def get_course(cookie,year,term):
 #获取学生课程，返回课程列表，每个课程为一个字典
     result = get_course_result(cookie.encode('ascii'),year.encode('ascii'),term.encode('ascii'))

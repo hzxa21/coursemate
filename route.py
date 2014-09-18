@@ -54,21 +54,24 @@ def login():
     if request.method == 'POST':    
         res, cookie = sysujwxt.login(request.form['stuid'],
                 request.form['password'])
-        res2, info = sysujwxt.get_student_info(cookie)
-        if res and res2:
+        if res:
             user = query_db("SELECT * FROM student WHERE user_id = %s",
                     (request.form['stuid'],), one=True)
             if user is None:
-                sql = '''INSERT INTO student (user_id, username, school, major,
-                grade) VALUES (%s, %s, %s, %s, %s)'''
-                g.cursor.execute(sql, (
-                    request.form['stuid'],
-                    info['name'],
-                    info['school'],
-                    info['major'],
-                    info['grade']
-                    ))
-            g.conn.commit()
+                res2, info = sysujwxt.get_student_info(cookie)
+                if res2:
+                    sql = '''INSERT INTO student (user_id, username, school, major,
+                    grade) VALUES (%s, %s, %s, %s, %s)'''
+                    g.cursor.execute(sql, (
+                        request.form['stuid'],
+                        info['name'],
+                        info['school'],
+                        info['major'],
+                        info['grade']
+                        ))
+                    g.conn.commit()
+                else:
+                    return render_template('login.html', error=True)
             # store user's cookie of sysujwxt
             session['USR_COOKIE'] = cookie;
             session['USR_ID'] = request.form['stuid']

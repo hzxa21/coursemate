@@ -13,6 +13,7 @@ db = MySQLdb.connect(
 
 app = Flask(__name__)
 app.secret_key = 'vkFwRjPgASwNed1sBmXjy+o/OSY0qFsPe1fljeyDE5aSbidWesAp9tNcenWcnmnS'
+app.debug = True
 
 @app.before_request
 def init():
