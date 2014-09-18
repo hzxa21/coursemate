@@ -13,7 +13,7 @@
   <body>
     <div data-role="page" data-theme="a">
 	  <div data-role="header">
-		   <h1>CourseMate </h1>
+		   <h1>CourseMate</h1>
 		  <div data-role="navbar">
 			  <ul class="color">
 				  <li><a href="{{ url_for('course') }}" data-icon="home" data-theme="b"> 课程主页 </a></li>
@@ -23,7 +23,7 @@
 		  </div>
 	  </div>
 
-	  <div data-role="content" class="back" style="background: {{ url_for('static',filename='logoX.png') }} ">
+	  <div data-role="content" class="back" style="background: url({{ url_for('static',filename='logoX.png') }})">
 		  <center> <div>
           {% if user_info %}
 		  <center><table class="user">
