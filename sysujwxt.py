@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import urllib
-import pycurl
+import urllib2
+import cookielib
 import re
-import StringIO
 import json
-import logging
 import sys
 
 LOGIN_TIMEOUT = 15
@@ -21,62 +19,68 @@ def format_to_json(unformated_json):
     sub = r'"\1"'
     return re.sub(pat, sub, unformated_json)
 
-def retrive_data(url, cookie, request_json):
-    ch = pycurl.Curl()
-    ch.setopt(pycurl.URL, url)
-    ch.setopt(pycurl.POST, True)
-    ch.setopt(pycurl.POSTFIELDS, request_json)
-    ch.setopt(pycurl.TIMEOUT, REQUEST_TIMEOUT)
-    ch.setopt(pycurl.HTTPHEADER, ['Content-Type: multipart/form-data', 'render: unieap'])
-    ch.setopt(pycurl.COOKIE, "JSESSIONID="+cookie)
-    ret = StringIO.StringIO()
-    ch.setopt(pycurl.WRITEFUNCTION, ret.write)
+def retrive_data(url,cookie, request_json):
+
+    cookie = 'JSESSIONID='+cookie
+
+    #设置 cookie 处理器
+    #cj = cookielib.LWPCookieJar()
+    opener = urllib2.build_opener()
+    urllib2.install_opener(opener)
+    opener.addheaders.append(('Cookie',cookie))
+
+    request = urllib2.Request(url,request_json)
+    request.add_header('Content-Type','multipart/form-data')
+    request.add_header('render','unieap')
 
     try:
-        ch.perform()
-    except pycurl.error, e:
-        logging.error('%s, %s', e[0], e[1])
+        response = urllib2.urlopen(request,timeout=REQUEST_TIMEOUT)
+    except:
         return (False, 'timeout')
 
-    ret_code = ch.getinfo(pycurl.HTTP_CODE)
-    ret_body = ret.getvalue()
-    ch.close()
-    if (ret_body.startswith('THE-NODE-OF-SESSION-TIMEOUT', 5)):
-        return (False, 'expired')
-    else:
-        return (True, ret_body)
+    ret_code = response.getcode()
+
+    ret_body = response.read()
+
+    return (True, ret_body)
 
 def login(username, passward):
     url = 'http://uems.sysu.edu.cn/jwxt/j_unieap_security_check.do'
 
-    ch = pycurl.Curl()
-    ch.setopt(pycurl.URL, url)
-    ch.setopt(pycurl.TIMEOUT, LOGIN_TIMEOUT)
-    ch.setopt(pycurl.POST, True)
-    data = urllib.urlencode({'j_username': username, 'j_password': passward})
-    ch.setopt(pycurl.POSTFIELDS, data)
-    ret = StringIO.StringIO()
-    ch.setopt(pycurl.WRITEFUNCTION, ret.write)
-    # add header to ret value
-    ch.setopt(pycurl.HEADER, True)
+    #设置 cookie 处理器
+    cj = cookielib.LWPCookieJar()
+    #cj = cookielib.CookieJar()
+    cookie_support = urllib2.HTTPCookieProcessor(cj)
+    opener = urllib2.build_opener(cookie_support, urllib2.HTTPHandler)
+    urllib2.install_opener(opener)
+
+
+    postData = urllib.urlencode({'j_username': username, 'j_password': passward})
+
+    request = urllib2.Request(url,postData)
 
     try:
-        ch.perform()
-    except pycurl.error, e:
-        logging.error('%s, %s', e[0], e[1])
+        response = urllib2.urlopen(request,timeout=LOGIN_TIMEOUT)
+    except:
         return (False, 'timeout')
 
-    ret_code = ch.getinfo(pycurl.HTTP_CODE)
-    ch.close()
-    if ret_code == 200:
-        logging.debug('Login errorpass: %s %s', username, passward)
-        return (False, 'errorpass')
-    else:
-        ret_header = ret.getvalue()
-        cookies = re.findall(r'^Set-Cookie: (.*);', ret_header, re.MULTILINE)
-        cookie = cookies[0][11:]
-        logging.debug('Login success: %s %s', username, passward)
-        return (True, cookie)
+    ret_code = response.getcode()
+
+    ret_body = response.read()
+
+    cookie = ""
+
+    for item in cj:
+        if item.name == 'JSESSIONID':
+            cookie = item.value
+            break
+        else:
+            cookie = "error"
+
+    if cookie == 'error':
+        return (False,'errorpass')
+
+    return (True, cookie)
 
 def get_course_result(cookie,year,term):
     url = 'http://uems.sysu.edu.cn/jwxt/xstk/xstk.action?method=getXsxkjgxxlistByxh '
@@ -133,7 +137,6 @@ def get_course_result(cookie,year,term):
 # Personal info Query
 # --------------------
 def get_info(cookie):
-    logging.debug('Getting info: %s', cookie)
     url = "http://uems.sysu.edu.cn/jwxt/WhzdAction/WhzdAction.action?method=getGrwhxxList"
     query_json = """
     {
@@ -171,7 +174,6 @@ def get_info(cookie):
 # Personal info Query
 # --------------------
 def get_info(cookie):
-    logging.debug('Getting info: %s', cookie)
     url = "http://uems.sysu.edu.cn/jwxt/WhzdAction/WhzdAction.action?method=getGrwhxxList"
     query_json = """
     {
@@ -278,4 +280,5 @@ if __name__ == "__main__":
 
     else:
         print('login error')
+        print cookie
 

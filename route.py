@@ -34,12 +34,12 @@ def fetch_course():
         g.conn.commit()
         return course_info
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     if 'USR_ID' in session:
-        return render_template('user.html')
+        return redirect(url_for('course'))
     else:
-        return render_template('login.html')
+        return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -73,19 +73,20 @@ def login():
             session['USR_COOKIE'] = cookie;
             session['USR_ID'] = request.form['stuid']
             
-            return redirect(url_for('user'))
+            return redirect(url_for('course'))
         else:
             return render_template('login.html', error=True)
     else:
         return render_template('login.html')
 
-@app.route('/logout')
+@app.route('/logout', methods=['GET'])
 def logout():
-    session.pop('USR_ID')
-    session.pop('USR_COOKIE')
+    if 'USR_ID' in session:
+        session.pop('USR_ID')
+        session.pop('USR_COOKIE')
     return redirect(url_for('login'))
 
-@app.route('/course', methods=['GET','POST'])
+@app.route('/course', methods=['GET', 'POST'])
 def course():
     """
         form传值变量名：
@@ -95,19 +96,19 @@ def course():
         返回值：
             course_list: 学生课程列表，每个课程为一个字典
     """
-    if 'USR_ID' in session:
-        if request.method == 'GET':
-            sql = '''SELECT * FROM stu_course a, course b WHERE
-            a.cou_id = b.cou_id and a.stu_id = %s'''
-            course_info = query_db(sql, (session['USR_ID'],))
-            if not course_info:
-                course_info = fetch_course()
-            return render_template('course.html', course_list=course_info)
-        else:
-            course_info = fetch_course()
-            return render_template('course.html', course_list=course_info)
-    else:
+    if 'USR_ID' not in session:
         return redirect(url_for('login'))
+
+    if request.method == 'GET':
+        sql = '''SELECT * FROM stu_course a, course b WHERE
+        a.cou_id = b.cou_id and a.stu_id = %s'''
+        course_info = query_db(sql, (session['USR_ID'],))
+        if not course_info:
+            course_info = fetch_course()
+        return render_template('course.html', course_list=course_info)
+    else:
+        course_info = fetch_course()
+        return render_template('course.html', course_list=course_info)
 
 @app.route('/user', methods=['GET', 'POST'])
 def user():
